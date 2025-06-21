@@ -23,18 +23,25 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
     attribution:"OpenStreetMap"
 }).addTo(map)
 
+const busIcon = L.icon({
+    iconUrl: 'img/bus.png', // Replace with actual image path
+    iconSize: [70, 70],
+  });
+
 const markers = {};
 
 socket.on("receive-location", (data)=>{
     const {id, latitude, longitude} = data;
     map.setView([latitude, longitude]);
     if(markers[id]){
-        marker[id].setLatLng([latitude, longitude]);
+        markers[id].setLatLng([latitude, longitude]);
 
     }else{
-        markers[id]= L.marker([latitude, longitude ]).addTo(map);
+        markers[id]= L.marker([latitude, longitude ], { icon: busIcon }).addTo(map);
     }
 });
+
+
 
 socket.on("user-disconnected", (id) =>{
     if(markers[id]){
