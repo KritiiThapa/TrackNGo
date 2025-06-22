@@ -37,9 +37,7 @@ const Dashboard = () => {
         <a href="#">🏠 Dashboard</a>
         <a href="#">🚌 Bus Routes</a>
         <a href="#">👨‍✈️ Drivers</a>
-        <a href="http://localhost:3000/live"
-  target="_blank"
-  rel="noopener noreferrer">📍 Live Map</a>
+        <a href="/livemap">📍 Live Map</a>
         <a href="#">⚙️ Settings</a>
 <a
   href="/login"

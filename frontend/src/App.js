@@ -5,6 +5,9 @@ import Home from "./components/Home";
 import Dashboard from "./components/Dashboard"; // adjust path if it's elsewhere
 import DriverLogin from "./components/DriverLogin"; 
 import Driverhomepage from "./components/Driverhomepage";
+import LiveMap from "./components/LiveMap";
+import Attendance from './components/Attendance';
+
 
 
 function App() {
@@ -16,6 +19,9 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
          <Route path="/driver-login" element={<DriverLogin />} />
         <Route path="/driver-homepage" element={<Driverhomepage />} />
+        <Route path="/livemap" element={<LiveMap />} />
+        <Route path="/attendance" element={<Attendance />} />
+
 
 
       </Routes>

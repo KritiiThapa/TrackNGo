@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pickup_points",
+  "info": {
+    "singularName": "pickup-point",
+    "pluralName": "pickup-points",
+    "displayName": "pickup-point"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "child_name": {
+      "type": "string"
+    },
+    "lat": {
+      "type": "decimal"
+    },
+    "lng": {
+      "type": "decimal"
+    },
+    "address": {
+      "type": "string"
+    },
+    "auth": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::auth.auth",
+      "mappedBy": "pickup_point"
+    }
+  }
+}

@@ -19,6 +19,12 @@
     },
     "password": {
       "type": "string"
+    },
+    "pickup_point": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::pickup-point.pickup-point",
+      "inversedBy": "auth"
     }
   }
 }
