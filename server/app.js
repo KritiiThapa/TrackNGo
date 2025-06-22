@@ -21,7 +21,7 @@ io.on("connection", function (socket){
     })
 });
 
-app.get("/", function (req, res) {
+app.get("/live", function (req, res) {
     res.render("index");
 });
 
