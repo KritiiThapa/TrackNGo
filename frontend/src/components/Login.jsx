@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchDataFromApi, postDataToApi } from "../api/api";
 
+
+
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [loginData, setLoginData] = useState({ email: "", password: "" });
@@ -38,6 +40,7 @@ const Login = () => {
       if (users && users.data && users.data.length > 0) {
         localStorage.setItem("user", JSON.stringify(users.data[0].email));
         navigate("/dashboard");
+        localStorage.setItem("userRole", "parent");
       } else {
         alert("Invalid login credentials");
       }
@@ -240,5 +243,7 @@ const Login = () => {
     </div>
   );
 };
+
+
 
 export default Login;

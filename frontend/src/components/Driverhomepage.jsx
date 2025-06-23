@@ -22,42 +22,46 @@ const Driverhomepage = () => {
       setAttendanceCount(passedCount);
     }
 
-    const socket = io("http://localhost:3000"); // Adjust for your backend
+    const userRole = localStorage.getItem("userRole"); // Get the role
+    if (userRole === "driver") {
+      const socket = io("http://localhost:3000"); // Adjust for your backend
 
-    function sendLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          const coords = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          socket.emit("driverLocationUpdate", coords);
-        });
-      } else {
-        console.warn("Geolocation not supported");
+      function sendLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition((position) => {
+            const coords = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+            socket.emit("driverLocationUpdate", coords);
+          });
+        } else {
+          console.warn("Geolocation not supported");
+        }
       }
+
+      const locationInterval = setInterval(sendLocation, 5000);
+      sendLocation();
+
+      return () => {
+        clearInterval(locationInterval);
+        socket.disconnect();
+      };
     }
-
-    const locationInterval = setInterval(sendLocation, 5000);
-    sendLocation();
-
-    return () => {
-      clearInterval(locationInterval);
-      socket.disconnect();
-    };
   }, [passedCount]);
 
   return (
     <div className="page-container" style={{ display: "flex", minHeight: "100vh", background: "var(--background, #f5f5f5)", color: "var(--text, #222)" }}>
       <aside className="sidebar">
-        <h2>🚍 TrackMyBus</h2>
+        <h2>🚍 TrackNGo</h2>
         <a href="/driver">🏠 Driver Dashboard</a>
-        <a href="http://localhost:3000/live" target="_blank" rel="noopener noreferrer">📍 Live Map</a>
+        <a href="http://localhost:3000/live?role=driver" target="_blank" rel="noopener noreferrer">📍 Live Map</a>
         <a href="/attendance">✅ Take Attendance</a>
         <a
           href="/driver-login"
           onClick={() => {
             localStorage.removeItem("driver");
+            localStorage.removeItem("userRole"); 
           }}
         >
           🚪 Logout
@@ -92,7 +96,6 @@ const Driverhomepage = () => {
           </div>
         </section>
       </main>
-     
     </div>
   );
 };

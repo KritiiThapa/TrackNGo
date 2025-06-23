@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchDataFromApi } from "../api/api";
+
+
 const DriverLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,6 +31,7 @@ const DriverLogin = () => {
       // localStorage.setItem("USER_NAME", data[0].attributes.name);
       // localStorage.setItem("USER_EMAIL", data[0].attributes.email);
       window.location.href = "/driver-homepage";
+      localStorage.setItem("userRole", "parent");
     }
   };
   return (
@@ -88,5 +91,8 @@ const DriverLogin = () => {
     </div>
   );
 };
+
+
+
 
 export default DriverLogin;
