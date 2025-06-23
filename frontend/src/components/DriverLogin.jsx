@@ -1,43 +1,36 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { fetchDataFromApi } from "../api/api";
 const DriverLogin = () => {
-  const [loginData, setLoginData] = useState({ email: "", password: "" });
-  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleLoginChange = (e) => {
-    setLoginData({ ...loginData, [e.target.name]: e.target.value });
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
   };
 
-  const handleLogin = async (e) => {
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch("http://localhost:1337/api/auth/local", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          identifier: loginData.email,
-          password: loginData.password,
-        }),
-      });
+    const formData = {
+      email: email,
+      password: password,
+    };
+    let { data } = await fetchDataFromApi(
+      `/drivers?populate=*&filters[$and][0][email]=${formData.email}&filters[$and][1][password]=${formData.password}`
+    );
 
-      const data = await response.json();
-
-      if (data.jwt) {
-        localStorage.setItem("jwt", data.jwt);
-        localStorage.setItem("driver", JSON.stringify(data.user));
-        navigate("/driver-dashboard");
-      } else {
-        alert(data.error?.message || "Invalid login");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      alert("Something went wrong");
+    if (!data.length) {
+      alert("wrong credentials");
+    } else {
+      alert("Welcome");
+      // localStorage.setItem("USER_NAME", data[0].attributes.name);
+      // localStorage.setItem("USER_EMAIL", data[0].attributes.email);
+      window.location.href = "/driver-homepage";
     }
   };
-
   return (
     <div
       className="min-h-screen w-full flex flex-col items-center py-8"
@@ -56,14 +49,14 @@ const DriverLogin = () => {
         <h2 className="text-xl font-semibold text-center mb-4">Driver Login</h2>
 
         <form
-          onSubmit={handleLogin}
+          onSubmit={handleSubmit}
           className="w-[280px] mx-auto mt-8"
         >
           <input
             type="text"
             name="email"
-            value={loginData.email}
-            onChange={handleLoginChange}
+            value={email}
+            onChange={handleEmailChange}
             className="w-full border-b py-2 my-2 outline-none"
             style={{ background: "transparent", borderColor: "#ccc" }}
             placeholder="Email"
@@ -72,15 +65,15 @@ const DriverLogin = () => {
           <input
             type="password"
             name="password"
-            value={loginData.password}
-            onChange={handleLoginChange}
+            value={password}
+            onChange={handlePasswordChange}
             className="w-full border-b py-2 my-2 outline-none"
             style={{ background: "transparent", borderColor: "#ccc" }}
             placeholder="Password"
             required
           />
 
-          <button
+          <button type = "submit"
             className="w-[85%] py-2 px-4 rounded-[30px] mx-auto block mt-6"
             style={{
               background:

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { io } from "socket.io-client";
 import './Dashboard.css';
+import LiveMap from "./LiveMap";
 
 const Driverhomepage = () => {
   const location = useLocation();
@@ -51,7 +52,7 @@ const Driverhomepage = () => {
       <aside className="sidebar">
         <h2>🚍 TrackMyBus</h2>
         <a href="/driver">🏠 Driver Dashboard</a>
-        <a href="/livemap" target="_blank" rel="noopener noreferrer">📍 Live Map</a>
+        <a href="http://localhost:3000/live" target="_blank" rel="noopener noreferrer">📍 Live Map</a>
         <a href="/attendance">✅ Take Attendance</a>
         <a
           href="/driver-login"
@@ -91,6 +92,7 @@ const Driverhomepage = () => {
           </div>
         </section>
       </main>
+     
     </div>
   );
 };
