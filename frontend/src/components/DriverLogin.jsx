@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchDataFromApi } from "../api/api";
 
-
 const DriverLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,7 +20,7 @@ const DriverLogin = () => {
       password: password,
     };
     let { data } = await fetchDataFromApi(
-      `/drivers?populate=*&filters[$and][0][email]=${formData.email}&filters[$and][1][password]=${formData.password}`
+      `/drivers?populate=*&filters[$and][0][email]=${formData.email}&filters[$and][1][password]=${formData.password}`,
     );
 
     if (!data.length) {
@@ -51,10 +50,7 @@ const DriverLogin = () => {
       >
         <h2 className="text-xl font-semibold text-center mb-4">Driver Login</h2>
 
-        <form
-          onSubmit={handleSubmit}
-          className="w-[280px] mx-auto mt-8"
-        >
+        <form onSubmit={handleSubmit} className="w-[280px] mx-auto mt-8">
           <input
             type="text"
             name="email"
@@ -76,7 +72,8 @@ const DriverLogin = () => {
             required
           />
 
-          <button type = "submit"
+          <button
+            type="submit"
             className="w-[85%] py-2 px-4 rounded-[30px] mx-auto block mt-6"
             style={{
               background:
@@ -91,8 +88,5 @@ const DriverLogin = () => {
     </div>
   );
 };
-
-
-
 
 export default DriverLogin;
