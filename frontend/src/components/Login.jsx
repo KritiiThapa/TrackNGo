@@ -17,9 +17,7 @@ const Login = () => {
     childRoll: "",
   });
   const navigate = useNavigate();
- const handleDriverClick = () => {
-    navigate("/driver-login"); 
-  };
+
   const switchToRegister = () => setIsLogin(false);
   const switchToLogin = () => setIsLogin(true);
 
@@ -137,10 +135,7 @@ const Login = () => {
           >
             Log In
           </button>
-          <p className="mt-6 text-sm">Forgot Your Password?? No worry.</p>
-          <a href="#" className="text-sm underline">
-            Click here
-          </a>
+        
         </form>
 
         {/* Register Form */}

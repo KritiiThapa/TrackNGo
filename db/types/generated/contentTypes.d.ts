@@ -394,6 +394,7 @@ export interface ApiAuthAuth extends Schema.CollectionType {
 export interface ApiDriverDriver extends Schema.CollectionType {
   collectionName: "drivers";
   info: {
+    description: "";
     displayName: "driver";
     pluralName: "drivers";
     singularName: "driver";
@@ -402,6 +403,7 @@ export interface ApiDriverDriver extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
+    Age: Attribute.Integer;
     createdAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
       "api::driver.driver",
@@ -410,7 +412,9 @@ export interface ApiDriverDriver extends Schema.CollectionType {
     > &
       Attribute.Private;
     email: Attribute.String;
+    Name: Attribute.String;
     password: Attribute.String;
+    phoneNumber: Attribute.BigInteger;
     publishedAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     updatedBy: Attribute.Relation<

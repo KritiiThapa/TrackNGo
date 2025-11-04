@@ -1,35 +1,59 @@
-import React, { useState, useEffect } from 'react';
-import './InfoDriver.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./InfoDriver.css";
 
 const InfoDriver = () => {
+  const navigate = useNavigate();
+
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [authorized, setAuthorized] = useState(false); // ✅ auth flag
 
+  // ✅ Role validation (first useEffect)
   useEffect(() => {
-    fetchDrivers();
-  }, []);
+    const userRole = localStorage.getItem("userRole");
 
-  const fetchDrivers = async () => {
-    try {
-      const response = await fetch('http://localhost:1337/api/drivers');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Drivers data:', data); // optional for debugging
-      setDrivers(data.data || []);
-      setLoading(false);
-    } catch (err) {
-      console.error('Error fetching drivers:', err);
-      setError(err.message);
-      setLoading(false);
+    if (!userRole) {
+      alert("Please log in first.");
+      navigate("/login");
+    } else if (userRole === "driver") {
+      alert("Access denied! Only parents can view this page.");
+      navigate("/driver-homepage");
+    } else if (userRole === "parent") {
+      setAuthorized(true);
+    } else {
+      navigate("/login");
     }
-  };
+  }, [navigate]);
 
-  // Handles both flat and nested Strapi responses
-  const getDriverAttribute = (driver, attribute, fallback = 'N/A') => {
+  // ✅ Fetch logic (only runs after role confirmed)
+  useEffect(() => {
+    if (!authorized) return;
+
+    const fetchDrivers = async () => {
+      try {
+        const response = await fetch("http://localhost:1337/api/drivers");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Drivers data:", data);
+        setDrivers(data.data || []);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching drivers:", err);
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchDrivers();
+  }, [authorized]);
+
+  // ✅ Safe attribute helpers
+  const getDriverAttribute = (driver, attribute, fallback = "N/A") => {
     return (
       driver?.attributes?.[attribute] ||
       driver?.[attribute] ||
@@ -38,14 +62,20 @@ const InfoDriver = () => {
   };
 
   const getAvatarInitials = (driver) => {
-    const name = getDriverAttribute(driver, 'Name', '');
-    return name
-      .split(' ')
-      .map(n => n.charAt(0))
-      .join('')
-      .toUpperCase() || 'DR';
+    const name = getDriverAttribute(driver, "Name", "");
+    return (
+      name
+        .split(" ")
+        .map((n) => n.charAt(0))
+        .join("")
+        .toUpperCase() || "DR"
+    );
   };
 
+  // ✅ Early return until authorized
+  if (!authorized) return null;
+
+  // === Render UI ===
   if (loading) {
     return (
       <div className="driver-container">
@@ -63,7 +93,7 @@ const InfoDriver = () => {
         <div className="error-message">
           <h3>⚠️ Error Loading Drivers</h3>
           <p>{error}</p>
-          <button onClick={fetchDrivers} className="retry-btn">
+          <button onClick={() => window.location.reload()} className="retry-btn">
             Try Again
           </button>
         </div>
@@ -77,41 +107,39 @@ const InfoDriver = () => {
         <h1>🚗 Our Drivers</h1>
         <p>Meet our professional driving team</p>
         <div className="driver-count">
-          {drivers.length} driver{drivers.length !== 1 ? 's' : ''} found
+          {drivers.length} driver{drivers.length !== 1 ? "s" : ""} found
         </div>
       </div>
 
       <div className="drivers-grid">
         {drivers.map((driver) => (
           <div key={driver.id} className="driver-card">
-            <div className="driver-avatar">
-              {getAvatarInitials(driver)}
-            </div>
+            <div className="driver-avatar">{getAvatarInitials(driver)}</div>
 
             <div className="driver-info">
               <h3 className="driver-name">
-                {getDriverAttribute(driver, 'Name', 'Unknown Driver')}
+                {getDriverAttribute(driver, "Name", "Unknown Driver")}
               </h3>
 
               <div className="driver-details">
                 <div className="detail-item">
                   <span className="detail-label">Age</span>
                   <span className="detail-value">
-                    {getDriverAttribute(driver, 'Age')}
+                    {getDriverAttribute(driver, "Age")}
                   </span>
                 </div>
 
                 <div className="detail-item">
                   <span className="detail-label">Phone</span>
                   <span className="detail-value">
-                    {getDriverAttribute(driver, 'phoneNumber')}
+                    {getDriverAttribute(driver, "phoneNumber")}
                   </span>
                 </div>
 
                 <div className="detail-item">
                   <span className="detail-label">Email</span>
                   <span className="detail-value email">
-                    {getDriverAttribute(driver, 'email')}
+                    {getDriverAttribute(driver, "email")}
                   </span>
                 </div>
               </div>

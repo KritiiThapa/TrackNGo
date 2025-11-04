@@ -5,6 +5,7 @@ import { fetchDataFromApi } from "../api/api";
 const DriverLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -30,7 +31,7 @@ const DriverLogin = () => {
       // localStorage.setItem("USER_NAME", data[0].attributes.name);
       // localStorage.setItem("USER_EMAIL", data[0].attributes.email);
       window.location.href = "/driver-homepage";
-      localStorage.setItem("userRole", "parent");
+      localStorage.setItem("userRole", "driver");
     }
   };
   return (
@@ -40,7 +41,7 @@ const DriverLogin = () => {
     >
       <header className="navbar flex items-center justify-between w-full shadow-md">
         <a href="/" className="text-2xl font-bold tracking-wide">
-          TrackNGo
+        🚍 TrackNGo
         </a>
       </header>
 
@@ -49,6 +50,16 @@ const DriverLogin = () => {
         style={{ background: "var(--white)" }}
       >
         <h2 className="text-xl font-semibold text-center mb-4">Driver Login</h2>
+                  <button
+          className="mt-6 py-3 px-6 rounded-[30px] mx-auto block"
+          onClick={() => navigate("/login")}
+          style={{
+            background: "linear-gradient(to right, var(--primary), var(--tertiary))",
+            color: "var(--text)",
+          }}
+        >
+          Continue as Parent
+        </button>
 
         <form onSubmit={handleSubmit} className="w-[280px] mx-auto mt-8">
           <input

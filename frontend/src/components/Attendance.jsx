@@ -1,12 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import './Dashboard.css'; // Make sure this CSS has fallback colors
+import "./Dashboard.css";
 
 const Attendance = () => {
   const navigate = useNavigate();
 
+  const [authorized, setAuthorized] = useState(false);
   const students = ["Ram", "Hari", "Sita", "Gita"];
   const [presentStudents, setPresentStudents] = useState([]);
+
+  // ✅ Role-based access control
+  useEffect(() => {
+      const userRole = localStorage.getItem("userRole");
+  
+      if (!userRole) {
+        alert("Please log in first.");
+        navigate("/login");
+      } else if (userRole === "parent") {
+        alert("Access denied! Only drivers can view this page.");
+        navigate("/dashboard");
+      } else if (userRole === "driver") {
+        setAuthorized(true);
+      } else {
+        navigate("/login");
+      }
+    }, [navigate]);
+
+  // ✅ Don't render until role check is done
+  if (!authorized) return null;
 
   const toggleAttendance = (student) => {
     if (presentStudents.includes(student)) {
@@ -22,7 +43,10 @@ const Attendance = () => {
   };
 
   return (
-    <div className="attendance-page" style={{ padding: "2rem", background: "white", minHeight: "100vh" }}>
+    <div
+      className="attendance-page"
+      style={{ padding: "2rem", background: "white", minHeight: "100vh" }}
+    >
       <h2 style={{ marginBottom: "1.5rem", color: "#333" }}>✅ Take Attendance</h2>
       <ul className="student-list" style={{ listStyle: "none", padding: 0 }}>
         {students.map((student) => (
@@ -35,7 +59,9 @@ const Attendance = () => {
               border: "2px solid #38bdf8",
               borderRadius: "10px",
               cursor: "pointer",
-              backgroundColor: presentStudents.includes(student) ? "#38bdf8" : "#f9f9f9",
+              backgroundColor: presentStudents.includes(student)
+                ? "#38bdf8"
+                : "#f9f9f9",
               color: presentStudents.includes(student) ? "#fff" : "#222",
               fontWeight: "bold",
               transition: "0.3s",

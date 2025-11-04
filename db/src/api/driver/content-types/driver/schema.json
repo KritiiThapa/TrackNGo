@@ -4,7 +4,8 @@
   "info": {
     "singularName": "driver",
     "pluralName": "drivers",
-    "displayName": "driver"
+    "displayName": "driver",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -15,6 +16,15 @@
       "type": "string"
     },
     "password": {
+      "type": "string"
+    },
+    "Age": {
+      "type": "integer"
+    },
+    "phoneNumber": {
+      "type": "biginteger"
+    },
+    "Name": {
       "type": "string"
     }
   }
