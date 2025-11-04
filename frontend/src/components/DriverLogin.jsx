@@ -41,7 +41,7 @@ const DriverLogin = () => {
     >
       <header className="navbar flex items-center justify-between w-full shadow-md">
         <a href="/" className="text-2xl font-bold tracking-wide">
-        🚍 TrackNGo
+          TrackNGo
         </a>
       </header>
 

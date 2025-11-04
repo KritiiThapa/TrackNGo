@@ -3,8 +3,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchDataFromApi, postDataToApi } from "../api/api";
 
-
-
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [loginData, setLoginData] = useState({ email: "", password: "" });
@@ -17,7 +15,9 @@ const Login = () => {
     childRoll: "",
   });
   const navigate = useNavigate();
-
+ const handleDriverClick = () => {
+    navigate("/driver-login"); 
+  };
   const switchToRegister = () => setIsLogin(false);
   const switchToLogin = () => setIsLogin(true);
 
@@ -38,7 +38,6 @@ const Login = () => {
       if (users && users.data && users.data.length > 0) {
         localStorage.setItem("user", JSON.stringify(users.data[0].email));
         navigate("/dashboard");
-        localStorage.setItem("userRole", "parent");
       } else {
         alert("Invalid login credentials");
       }
@@ -70,7 +69,7 @@ const Login = () => {
     >
      <header className="navbar flex items-center justify-between w-full shadow-md">
   <a href="/" className="text-2xl font-bold tracking-wide">
-  🚍 TrackNGo
+    TrackNGo
   </a>
 </header>
 
@@ -135,7 +134,10 @@ const Login = () => {
           >
             Log In
           </button>
-        
+          <p className="mt-6 text-sm">Forgot Your Password?? No worry.</p>
+          <a href="#" className="text-sm underline">
+            Click here
+          </a>
         </form>
 
         {/* Register Form */}
@@ -238,7 +240,5 @@ const Login = () => {
     </div>
   );
 };
-
-
 
 export default Login;
