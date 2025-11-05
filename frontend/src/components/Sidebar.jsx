@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import './Dashboard.css'; // Put your CSS here
+import { useAuth } from "../context/AuthContext";
 // console.log("Sidebar is rendering");
 
 
 const Sidebar = () => {
+  const { logout } = useAuth();
   return (
     <aside className="sidebar">
   
@@ -17,6 +19,7 @@ const Sidebar = () => {
         to="/login"
         onClick={() => {
           localStorage.removeItem("user");
+          logout();
         }}
       >
         🚪 Logout

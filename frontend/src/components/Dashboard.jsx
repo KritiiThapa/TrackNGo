@@ -1,13 +1,30 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import './Dashboard.css'; // Put your CSS here
 
 const Dashboard = () => {
   const [greeting, setGreeting] = useState("Hello!");
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [buses, setBuses] = useState(0);
   const [drivers, setDrivers] = useState(0);
   const [parents, setParents] = useState(0);
+  const [authorized, setAuthorized] = useState(false);
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    } else if (user.role !== "parent") {
+      alert("Access denied! Only parents can view this page.");
+      if (user.role === "driver") navigate("/driver-homepage");
+      else navigate("/login");
+    } else {
+      setAuthorized(true);
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
+    if (!authorized) return;
     const hour = new Date().getHours();
     if (hour < 12) setGreeting("Good morning 🌅");
     else if (hour < 17) setGreeting("Good afternoon☀️");
@@ -28,7 +45,8 @@ const Dashboard = () => {
     animateValue(0, 1, 1000, setBuses);
     animateValue(0, 1, 1000, setDrivers);
     animateValue(0, 1, 1000, setParents);
-  }, []);
+  }, [authorized]);
+  if (!authorized) return null;
 
   return (
     <div className="page-container" style={{ display: "flex", minHeight: "100vh", background: "var(--background)", color: "var(--text)" }}>

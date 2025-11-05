@@ -1,12 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import './Dashboard.css'; // Make sure this CSS has fallback colors
+import './Dashboard.css'; 
+import { useAuth } from "../context/AuthContext";
 
 const Attendance = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [authorized, setAuthorized] = useState(false);
 
   const students = ["Ram", "Hari", "Sita", "Gita"];
   const [presentStudents, setPresentStudents] = useState([]);
+  useEffect(() => {
+
+    if (!user) {
+      alert("Please log in first.");
+      navigate("/login");
+    } else if (user.role !== "driver") {
+      alert("Access denied! Only drivers can view this page.");
+      navigate("/dashboard");
+    } else {
+      setAuthorized(true);
+    }
+  }, [user, navigate]);
+  if (!authorized) return null;
+
 
   const toggleAttendance = (student) => {
     if (presentStudents.includes(student)) {

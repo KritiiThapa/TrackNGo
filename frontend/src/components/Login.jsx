@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchDataFromApi, postDataToApi } from "../api/api";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -15,6 +16,7 @@ const Login = () => {
     childRoll: "",
   });
   const navigate = useNavigate();
+  const { login } = useAuth();
  const handleDriverClick = () => {
     navigate("/driver-login"); 
   };
@@ -35,8 +37,15 @@ const Login = () => {
       const users = await fetchDataFromApi(
         `/auths?filters[email][$eq]=${loginData.email}&filters[password][$eq]=${loginData.password}`
       );
-      if (users && users.data && users.data.length > 0) {
-        localStorage.setItem("user", JSON.stringify(users.data[0].email));
+
+      if (users?.data?.length > 0) {
+        // Set user in AuthContext instead of localStorage
+        const userData = {
+          email: users.data[0].email,
+          role: "parent", // or fetch role from your DB
+          name: users.data[0].name || "Parent User",
+        };
+        login(userData); // save in context
         navigate("/dashboard");
       } else {
         alert("Invalid login credentials");

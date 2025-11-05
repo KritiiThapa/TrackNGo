@@ -1,17 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import './Driverdashboard.css';
+import { useAuth } from "../context/AuthContext";
 
 const Driverhomepage = () => {
+  const { user } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const passedCount = location.state?.count;
-
+  const [authorized, setAuthorized] = useState(false);
   const [greeting, setGreeting] = useState("Hello!");
   const [attendanceCount, setAttendanceCount] = useState(0);
   const [routeName, setRouteName] = useState("Route A");
+  useEffect(() => {
+
+    if (!user) {
+      alert("Please log in first.");
+      navigate("/login");
+    } else if (user.role !== "driver") {
+      alert("Access denied! Only drivers can view this page.");
+      navigate("/dashboard");
+    }else if (user.role === "parent") navigate("/dashboard"); 
+    else {
+      setAuthorized(true);
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
+    if(!authorized) return;
     const hour = new Date().getHours();
     if (hour < 12) setGreeting("Good morning 🌅");
     else if (hour < 17) setGreeting("Good afternoon☀️");
@@ -44,7 +61,8 @@ const Driverhomepage = () => {
       clearInterval(locationInterval);
       socket.disconnect();
     };
-  }, [passedCount]);
+  }, [authorized,passedCount]);
+  if(!authorized) return null;
 
   return (
     <div className="page-container" style={{ display: "flex", minHeight: "100vh", background: "var(--background, #f5f5f5)", color: "var(--text, #222)" }}>

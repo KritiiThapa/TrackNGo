@@ -1,15 +1,31 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import './InfoDriver.css';
 
 const InfoDriver = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
-    fetchDrivers();
-  }, []);
-
+    if (!user) {
+      navigate("/login");
+    } else if (user.role !== "parent") {
+      alert("Access denied! Only parents can view this page.");
+      if (user.role === "driver") navigate("/driver-homepage");
+      else navigate("/login");
+    } else {
+      setAuthorized(true);
+    }
+  }, [user, navigate]);
+  useEffect(() => {
+  if (!authorized) return;
+fetchDrivers();
+  }, [authorized]);
   const fetchDrivers = async () => {
     try {
       const response = await fetch('http://localhost:1337/api/drivers');
@@ -27,6 +43,7 @@ const InfoDriver = () => {
       setLoading(false);
     }
   };
+
 
   // Handles both flat and nested Strapi responses
   const getDriverAttribute = (driver, attribute, fallback = 'N/A') => {

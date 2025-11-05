@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import './Driverdashboard.css';
+import { useAuth } from "../context/AuthContext";
 // console.log("Sidebar is rendering");
 
 
 const Driversidebar = () => {
+  const { logout } = useAuth();
   return (
  <aside className="sidebar">
         <h2>🚍 TrackNGo</h2>
@@ -14,6 +16,7 @@ const Driversidebar = () => {
           to="/driver-login"
           onClick={() => {
             localStorage.removeItem("driver");
+            logout();
           }}
         >
           🚪 Logout

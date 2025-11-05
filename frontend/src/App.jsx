@@ -1,5 +1,8 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import PrivateRoute from "./components/PrivateRoute";
+
 import Login from "./components/Login";
 import Home from "./components/Home";
 import ParentMap from "./components/ParentMap";
@@ -19,34 +22,37 @@ import SimpleMap from "./components/SimpleMap";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Routes wrapped inside parentlayout */}
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Dashboard />} /> {/* now works as / */}
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="livemap" element={<ParentMap />} />
+     <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Login routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/driver-login" element={<DriverLogin />} />
+
+          {/* Parent routes */}
+          <Route path="/" element={<PrivateRoute allowedRoles={["parent"]}><Layout /></PrivateRoute>}>
+            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="livemap" element={<ParentMap />} />
             <Route path="drivers" element={<InfoDriver />} />
-        </Route>
-  {/* Routes inside driverlayout  */}
-  <Route path="/driver-homepage" element={<Layoutdriver />}>
-  <Route index element={<Driverhomepage />} />  {/* renders at /driver-homepage */}
-  <Route path="livemap" element={<DriverMap />} /> {/* renders at /driver-homepage/livemap */}
-  <Route path="attendance" element={<Attendance />} /> {/* renders at /driver-homepage/attendance */}
+          </Route>
 
-</Route>
+          {/* Driver routes */}
+          <Route path="/driver-homepage" element={<PrivateRoute allowedRoles={["driver"]}><Layoutdriver /></PrivateRoute>}>
+            <Route index element={<Driverhomepage />} />
+            <Route path="livemap" element={<DriverMap />} />
+            <Route path="attendance" element={<Attendance />} />
+          </Route>
 
-        {/* Routes outside layout (no sidebar) */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/driver-login" element={<DriverLogin />} />
+          {/* Test routes */}
           <Route path="/test-images" element={<ImageTest />} />
           <Route path="/test-simple" element={<SimpleMap />} />
 
-
-
-
-      </Routes>
-    </Router>
+          {/* Catch-all */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

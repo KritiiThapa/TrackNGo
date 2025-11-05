@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchDataFromApi } from "../api/api";
+import { useAuth } from "../context/AuthContext";
 
 const DriverLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -16,22 +18,40 @@ const DriverLogin = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = {
-      email: email,
-      password: password,
-    };
-    let { data } = await fetchDataFromApi(
-      `/drivers?populate=*&filters[$and][0][email]=${formData.email}&filters[$and][1][password]=${formData.password}`,
-    );
 
-    if (!data.length) {
-      alert("wrong credentials");
-    } else {
-      alert("Welcome");
-      // localStorage.setItem("USER_NAME", data[0].attributes.name);
-      // localStorage.setItem("USER_EMAIL", data[0].attributes.email);
-      window.location.href = "/driver-homepage";
+    try {
+      // Call the API
+      const { data } = await fetchDataFromApi(
+        `/drivers?populate=*&filters[$and][0][email]=${email}&filters[$and][1][password]=${password}`
+      );
+      console.log("API response:", data);
+
+      // Check if any driver is returned
+      if (!data.length) {
+        alert("Wrong credentials");
+        return;
+      }
+
+      const driver = data[0];
+
+      // Prepare driver data for context
+      const driverData = {
+        email: driver.email,
+        name: driver.name || "Driver User",
+        role: "driver",
+      };
+
+      // Save in context
+      login(driverData);
+
+      // Optionally save role in localStorage
       localStorage.setItem("userRole", "driver");
+
+      // Navigate to driver homepage
+      navigate("/driver-homepage");
+    } catch (error) {
+      console.error("Driver login error:", error);
+      alert("Something went wrong. Please try again. "+ error.message);
     }
   };
   return (

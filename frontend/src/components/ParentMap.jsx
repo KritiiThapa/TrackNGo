@@ -1,4 +1,3 @@
-// frontend/src/components/ParentMap.jsx
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import L from "leaflet";
