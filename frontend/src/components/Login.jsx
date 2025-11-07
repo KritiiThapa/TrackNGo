@@ -143,10 +143,7 @@ const Login = () => {
           >
             Log In
           </button>
-          <p className="mt-6 text-sm">Forgot Your Password?? No worry.</p>
-          <a href="#" className="text-sm underline">
-            Click here
-          </a>
+          
         </form>
 
         {/* Register Form */}
@@ -229,10 +226,7 @@ const Login = () => {
           >
             Register
           </button>
-          <p className="mt-6 text-sm">Forgot Your Password?? No worry.</p>
-          <a href="#" className="text-sm underline">
-            Click here
-          </a>
+         
         </form>
 
         <button
@@ -243,7 +237,7 @@ const Login = () => {
             color: "var(--text)",
           }}
         >
-          Continue as driver.
+          Continue as Driver
         </button>
       </div>
     </div>
