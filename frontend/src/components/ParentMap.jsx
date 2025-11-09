@@ -1,6 +1,7 @@
+// frontend/src/components/ParentMap.jsx
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
-import L from "leaflet";
+import Leaflet from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 const socket = io("http://localhost:5001"); // Make sure this matches your backend port
@@ -13,8 +14,8 @@ const PICKUP_POINTS = [
 ];
 
 // FIX FOR LEAFLET DEFAULT MARKERS
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
+delete Leaflet.Icon.Default.prototype._getIconUrl;
+Leaflet.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
@@ -29,7 +30,7 @@ const ParentMap = () => {
 
   // Create bus icon (BLUE for parent view)
   const createBusIcon = () => {
-    return L.divIcon({
+    return Leaflet.divIcon({
       html: `
         <div style="
           background: #2563eb;
@@ -55,7 +56,7 @@ const ParentMap = () => {
   useEffect(() => {
     if (initializedRef.current) return;
 
-    if (!mapRef.current || !L) return;
+    if (!mapRef.current || !Leaflet) return;
 
     try {
       console.log("👨‍👩‍👧‍👦 Initializing parent map...");
@@ -63,17 +64,17 @@ const ParentMap = () => {
       setStatus("Creating map...");
       
       // Initialize map
-      mapInstanceRef.current = L.map(mapRef.current).setView([27.7172, 85.3240], 14);
+      mapInstanceRef.current = Leaflet.map(mapRef.current).setView([27.7172, 85.3240], 14);
       console.log("✅ Parent map created");
       
       // Add tile layer
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      Leaflet.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: '© OpenStreetMap contributors'
       }).addTo(mapInstanceRef.current);
 
       // Add pickup points with DEFAULT markers
       PICKUP_POINTS.forEach((point) => {
-        L.marker([point.lat, point.lng])
+        Leaflet.marker([point.lat, point.lng])
           .addTo(mapInstanceRef.current)
           .bindPopup(`<b>${point.name}</b><br>Pickup Location`);
       });
@@ -106,7 +107,7 @@ const ParentMap = () => {
           console.log("🔄 Updated driver position");
         } else {
           console.log("🚌 Creating driver bus marker");
-          driverMarkerRef.current = L.marker([coords.lat, coords.lng], { 
+          driverMarkerRef.current = Leaflet.marker([coords.lat, coords.lng], { 
             icon: busIcon 
           })
             .addTo(mapInstanceRef.current)
@@ -153,20 +154,22 @@ const ParentMap = () => {
     };
   }, []);
 
-  return (
-    <div style={{ height: "100vh", width: "100vw", margin: 0, padding: 0 }}>
-      <div style={{ 
-        padding: "15px", 
-        background: "#059669", 
-        color: "white",
-      }}>
-        <h1 style={{ margin: 0, fontSize: "24px" }}>👨‍👩‍👧‍👦 Parent Tracking</h1>
-        <p style={{ margin: "5px 0 0 0", fontSize: "14px" }}>{status}</p>
+ return (
+    <div className="w-full h-full"> {/* CHANGED: Use className instead of inline styles */}
+      <div className="p-4 bg-green-600 text-white shadow-lg mb-0"> {/* CHANGED: Use className */}
+        <h2 className="text-xl font-bold">👨‍👩‍👧‍👦 Parent Tracking</h2> {/* CHANGED: Use className */}
+        <p className="mt-2">{status}</p> {/* CHANGED: Use className */}
+        <p className="text-sm opacity-90 mt-1"> {/* CHANGED: Use className */}
+          Live tracking of your child's school bus
+        </p>
       </div>
+      
+      {/* Map Container - CHANGED: Use className for consistent styling */}
       <div 
         ref={mapRef} 
+        className="rounded-lg shadow-lg border-2 border-gray-200"
         style={{ 
-          height: "calc(100vh - 80px)", 
+          height: "calc(100vh - 80px)",
           width: "100%",
         }} 
       />
